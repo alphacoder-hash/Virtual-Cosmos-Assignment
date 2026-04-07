@@ -3,6 +3,7 @@ import { io } from 'socket.io-client';
 import useGameStore from '../store/useGameStore';
 
 const SOCKET_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+console.log(`[Socket] Initializing with URL: ${SOCKET_URL}`);
 
 let socketInstance = null;
 
