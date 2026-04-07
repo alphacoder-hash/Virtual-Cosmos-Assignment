@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { io } from 'socket.io-client';
 import useGameStore from '../store/useGameStore';
 
-const SOCKET_URL = localStorage.getItem('custom_backend_url') || import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+const SOCKET_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
 
 let socketInstance = null;
 
@@ -18,8 +18,6 @@ export function useSocket() {
     addConnection,
     removeConnection,
     addMessage,
-    setConnected,
-    setConnectionError,
   } = useGameStore.getState();
 
   useEffect(() => {
@@ -28,22 +26,12 @@ export function useSocket() {
       return;
     }
 
-    const socket = io(SOCKET_URL, { 
-      transports: ['websocket'],
-      timeout: 5000,
-      reconnectionAttempts: 3
-    });
+    const socket = io(SOCKET_URL, { transports: ['websocket'] });
     socketInstance = socket;
     socketRef.current = socket;
 
     socket.on('connect', () => {
       console.log('[Socket] Connected:', socket.id);
-      setConnected(true);
-    });
-
-    socket.on('connect_error', (error) => {
-      console.error('[Socket] Connection Error:', error);
-      setConnectionError('Unable to connect to game server. Please ensure the backend is running.');
     });
 
     socket.on('SELF_STATE', (data) => {
@@ -74,7 +62,6 @@ export function useSocket() {
 
     socket.on('disconnect', () => {
       console.log('[Socket] Disconnected');
-      setConnected(false);
       socketInstance = null;
     });
 

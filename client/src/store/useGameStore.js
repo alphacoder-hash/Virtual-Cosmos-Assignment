@@ -18,9 +18,6 @@ const useGameStore = create((set, get) => ({
   isJoined: false,
   chatPanelOpen: false,
   activeChatRoomId: null,
-  isConnected: false,
-  connectionError: null,
-  customBackendUrl: localStorage.getItem('custom_backend_url') || null,
 
   // ── Actions ──────────────────────────────────────────────────────────────
 
@@ -81,15 +78,6 @@ const useGameStore = create((set, get) => ({
 
   setActiveChatRoom: (roomId) => set({ activeChatRoomId: roomId, chatPanelOpen: true }),
   closeChatPanel: () => set({ chatPanelOpen: false }),
-
-  // Connection Actions
-  setConnected: (status) => set({ isConnected: status, connectionError: null }),
-  setConnectionError: (error) => set({ connectionError: error, isConnected: false }),
-  setCustomBackendUrl: (url) => {
-    localStorage.setItem('custom_backend_url', url);
-    set({ customBackendUrl: url });
-    window.location.reload(); // Refresh to re-init socket with new URL
-  },
 }));
 
 export default useGameStore;
