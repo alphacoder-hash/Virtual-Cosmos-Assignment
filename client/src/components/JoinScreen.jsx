@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import useGameStore from '../store/useGameStore';
 import { getSocket } from '../hooks/useSocket';
 
@@ -10,9 +10,25 @@ const AVATAR_COLORS = [
 export default function JoinScreen() {
   const [username, setUsername] = useState('');
   const [selectedColor, setSelectedColor] = useState(AVATAR_COLORS[0]);
-  const { setJoined, connectionError, setCustomBackendUrl } = useGameStore();
+  const [isConnecting, setIsConnecting] = useState(false);
+  const { setJoined, connectionError, setCustomBackendUrl, isConnected } = useGameStore();
   const [showServerSetup, setShowServerSetup] = useState(false);
   const [tempBackendUrl, setTempBackendUrl] = useState(localStorage.getItem('custom_backend_url') || '');
+
+  // AUTO-OFFLINE FALLBACK
+  useEffect(() => {
+    let timer;
+    if (connectionError && isConnecting && !showServerSetup) {
+      // If we've been trying to connect and failed, wait 3s then jump in anyway
+      timer = setTimeout(() => {
+        if (!isConnected && !showServerSetup) {
+          console.log("Connection failed/timed out. Auto-entering offline mode.");
+          joinOffline();
+        }
+      }, 3000);
+    }
+    return () => clearTimeout(timer);
+  }, [connectionError, isConnecting, showServerSetup, isConnected]);
 
   const join = () => {
     const name = username.trim() || `Explorer_${Math.floor(Math.random() * 9999)}`;
@@ -131,10 +147,10 @@ export default function JoinScreen() {
                 <span>{connectionError}</span>
               </div>
               <div className="join-error-actions">
-                <button className="error-action-btn" onClick={() => setShowServerSetup(true)}>
+                <button className="error-action-btn primary" onClick={() => setShowServerSetup(true)}>
                   ⚙️ Server Setup
                 </button>
-                <button className="error-action-btn" onClick={joinOffline}>
+                <button className="error-action-btn secondary" onClick={joinOffline}>
                   🚶 Enter Offline
                 </button>
               </div>
