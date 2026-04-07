@@ -19,16 +19,9 @@ app.use(cors());
 app.use(express.json());
 
 const server = http.createServer(app);
-// Support multiple origins: the deployed Vercel URL + localhost for dev
-const allowedOrigins = [
-  process.env.CLIENT_URL,
-  'http://localhost:5173',
-  'http://localhost:4173',
-].filter(Boolean);
-
 const io = new Server(server, {
   cors: {
-    origin: allowedOrigins,
+    origin: process.env.CLIENT_URL || 'http://localhost:5173',
     methods: ['GET', 'POST'],
   },
 });

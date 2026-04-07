@@ -11,37 +11,27 @@ export default function JoinScreen() {
   const [username, setUsername] = useState('');
   const [selectedColor, setSelectedColor] = useState(AVATAR_COLORS[0]);
   const [isConnecting, setIsConnecting] = useState(false);
-  const [error, setError] = useState('');
   const { setJoined } = useGameStore();
 
   const join = () => {
     const name = username.trim() || `Explorer_${Math.floor(Math.random() * 9999)}`;
     setIsConnecting(true);
-    setError('');
 
     const socket = getSocket();
     if (socket?.connected) {
       socket.emit('USER_JOIN', { username: name, avatarColor: selectedColor });
       setJoined(name, selectedColor);
-      return;
+    } else {
+      // Wait for connection
+      const interval = setInterval(() => {
+        const s = getSocket();
+        if (s?.connected) {
+          s.emit('USER_JOIN', { username: name, avatarColor: selectedColor });
+          setJoined(name, selectedColor);
+          clearInterval(interval);
+        }
+      }, 200);
     }
-
-    // Wait up to 8 seconds for the socket to connect
-    let attempts = 0;
-    const MAX_ATTEMPTS = 40; // 40 × 200ms = 8s
-    const interval = setInterval(() => {
-      attempts++;
-      const s = getSocket();
-      if (s?.connected) {
-        s.emit('USER_JOIN', { username: name, avatarColor: selectedColor });
-        setJoined(name, selectedColor);
-        clearInterval(interval);
-      } else if (attempts >= MAX_ATTEMPTS) {
-        clearInterval(interval);
-        setIsConnecting(false);
-        setError('Cannot reach the server. Make sure the backend is running and try again.');
-      }
-    }, 200);
   };
 
   return (
@@ -113,21 +103,6 @@ export default function JoinScreen() {
               </>
             )}
           </button>
-
-          {error && (
-            <p style={{
-              color: '#f87171',
-              fontSize: '0.8rem',
-              marginTop: '0.75rem',
-              textAlign: 'center',
-              background: 'rgba(248,113,113,0.1)',
-              padding: '0.5rem 0.75rem',
-              borderRadius: '8px',
-              border: '1px solid rgba(248,113,113,0.3)',
-            }}>
-              ⚠️ {error}
-            </p>
-          )}
         </div>
 
         <p className="join-hint">Use WASD or Arrow keys to move</p>
