@@ -17,13 +17,16 @@ A high-performance, real-time 2D social environment where users can meet and int
 
 ---
 
-## 💎 Bonus Features (Above & Beyond)
+## 💎 Bonus Features (Enhanced Experience)
 
-1.  **📡 Radar Mini-map**: A real-time, pulsing radar in the HUD that shows yours and other players' positions across the entire map.
-2.  **🏃 Human-like Animated Avatars**: We replaced simple circles with composite character models (Body, Head, Eyes) featuring **Walking Bobbing** and **Idle Breathing** animations.
-3.  **🔊 Automatic Proximity Audio (Voice Chat)**: A peer-to-peer **WebRTC** voice link that activates automatically on proximity, allowing users to talk just like in real life.
-4.  **🧭 Advanced Camera System**: A smooth-lerping camera that keeps your avatar centered in the infinite-feeling cosmos.
-5.  **🌈 Dynamic Directional Facing**: Avatars flip horizontally based on their movement direction for better expressiveness.
+1.  **🚀 Modern Join Experience**: 
+    - **Particle Background**: A dynamic, animated background with floating cosmos particles.
+    - **Avatar Customization**: Choose your signature color from a curated palette before entering.
+    - **Interactive UI**: Glassmorphic cards with subtle hover effects and smooth transitions.
+2.  **📡 Radar Mini-map**: A real-time, pulsing radar in the HUD that shows yours and other players' positions across the entire map.
+3.  **🏃 Human-like Animated Avatars**: We replaced simple circles with composite character models (Body, Head, Eyes) featuring **Walking Bobbing** and **Idle Breathing** animations.
+4.  **🔊 Automatic Proximity Audio (Voice Chat)**: A peer-to-peer **WebRTC** voice link that activates automatically on proximity, allowing users to talk just like in real life.
+5.  **🧭 Advanced Camera System**: A smooth-lerping camera that keeps your avatar centered in the infinite-feeling cosmos.
 6.  **🎭 Social Emoji Reactions**: Real-time floating emotes (👋 ❤️ 😂 🔥) that sync across users for instant social feedback.
 7.  **💬 Real-Time Typing Indicators**: See a "..." bubble above avatars and a "User is typing..." message in the chat panel while messages are being composed.
 
