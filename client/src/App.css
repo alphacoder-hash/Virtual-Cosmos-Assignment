@@ -832,6 +832,102 @@ body {
   to { transform: rotate(360deg); }
 }
 
+.join-error-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.join-error-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.error-action-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-light);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.error-action-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* SERVER SETUP OVERLAY */
+.server-setup-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(8px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.server-setup-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  width: 100%;
+  max-width: 340px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  text-align: left;
+}
+
+.server-setup-card h3 {
+  color: #fff;
+  margin-bottom: 8px;
+  font-size: 18px;
+}
+
+.server-setup-card p {
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.server-setup-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.setup-btn {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+}
+
+.setup-btn.save {
+  background: var(--accent);
+  color: #fff;
+}
+
+.setup-btn.close {
+  background: var(--bg-element);
+  color: var(--text-main);
+}
+
 /* CONNECTION STATUS */
 .conn-status-indicator {
   position: absolute;

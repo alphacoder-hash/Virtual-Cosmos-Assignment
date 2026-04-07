@@ -10,8 +10,9 @@ const AVATAR_COLORS = [
 export default function JoinScreen() {
   const [username, setUsername] = useState('');
   const [selectedColor, setSelectedColor] = useState(AVATAR_COLORS[0]);
-  const [isConnecting, setIsConnecting] = useState(false);
-  const { setJoined, connectionError } = useGameStore();
+  const { setJoined, connectionError, setCustomBackendUrl } = useGameStore();
+  const [showServerSetup, setShowServerSetup] = useState(false);
+  const [tempBackendUrl, setTempBackendUrl] = useState(localStorage.getItem('custom_backend_url') || '');
 
   const join = () => {
     const name = username.trim() || `Explorer_${Math.floor(Math.random() * 9999)}`;
@@ -36,12 +37,17 @@ export default function JoinScreen() {
         }
 
         // Timeout or Error from store
-        if (Date.now() - startTime > 6000 || useGameStore.getState().connectionError) {
+        if (Date.now() - startTime > 4000 || useGameStore.getState().connectionError) {
           clearInterval(interval);
           setIsConnecting(false);
         }
       }, 200);
     }
+  };
+
+  const joinOffline = () => {
+    const name = username.trim() || `Explorer_${Math.floor(Math.random() * 9999)}`;
+    setJoined(name, selectedColor);
   };
 
   return (
@@ -115,16 +121,46 @@ export default function JoinScreen() {
           </button>
 
           {connectionError && (
-            <div className="join-error">
-              <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10" />
-                <line x1="12" y1="8" x2="12" y2="12" />
-                <line x1="12" y1="16" x2="12.01" y2="16" />
-              </svg>
-              <span>{connectionError}</span>
+            <div className="join-error-container">
+              <div className="join-error">
+                <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="12" y1="8" x2="12" y2="12" />
+                  <line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg>
+                <span>{connectionError}</span>
+              </div>
+              <div className="join-error-actions">
+                <button className="error-action-btn" onClick={() => setShowServerSetup(true)}>
+                  ⚙️ Server Setup
+                </button>
+                <button className="error-action-btn" onClick={joinOffline}>
+                  🚶 Enter Offline
+                </button>
+              </div>
             </div>
           )}
         </div>
+
+        {showServerSetup && (
+          <div className="server-setup-overlay">
+            <div className="server-setup-card">
+              <h3>Server Settings</h3>
+              <p>Enter your hosted backend URL or Desktop IP (e.g. http://192.168.1.5:3001)</p>
+              <input 
+                type="text" 
+                className="join-input" 
+                placeholder="http://localhost:3001"
+                value={tempBackendUrl}
+                onChange={(e) => setTempBackendUrl(e.target.value)}
+              />
+              <div className="server-setup-buttons">
+                <button className="setup-btn save" onClick={() => setCustomBackendUrl(tempBackendUrl)}>Save & Reload</button>
+                <button className="setup-btn close" onClick={() => setShowServerSetup(false)}>Close</button>
+              </div>
+            </div>
+          </div>
+        )}
 
         <p className="join-hint">Use WASD or Arrow keys to move</p>
       </div>
