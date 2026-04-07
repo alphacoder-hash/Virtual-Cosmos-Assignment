@@ -18,6 +18,8 @@ const useGameStore = create((set, get) => ({
   isJoined: false,
   chatPanelOpen: false,
   activeChatRoomId: null,
+  isConnected: false,
+  connectionError: null,
 
   // ── Actions ──────────────────────────────────────────────────────────────
 
@@ -78,6 +80,10 @@ const useGameStore = create((set, get) => ({
 
   setActiveChatRoom: (roomId) => set({ activeChatRoomId: roomId, chatPanelOpen: true }),
   closeChatPanel: () => set({ chatPanelOpen: false }),
+
+  // Connection Actions
+  setConnected: (status) => set({ isConnected: status, connectionError: null }),
+  setConnectionError: (error) => set({ connectionError: error, isConnected: false }),
 }));
 
 export default useGameStore;

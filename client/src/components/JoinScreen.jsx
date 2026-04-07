@@ -11,24 +11,34 @@ export default function JoinScreen() {
   const [username, setUsername] = useState('');
   const [selectedColor, setSelectedColor] = useState(AVATAR_COLORS[0]);
   const [isConnecting, setIsConnecting] = useState(false);
-  const { setJoined } = useGameStore();
+  const { setJoined, connectionError } = useGameStore();
 
   const join = () => {
     const name = username.trim() || `Explorer_${Math.floor(Math.random() * 9999)}`;
     setIsConnecting(true);
-
     const socket = getSocket();
     if (socket?.connected) {
       socket.emit('USER_JOIN', { username: name, avatarColor: selectedColor });
       setJoined(name, selectedColor);
     } else {
-      // Wait for connection
+      // Wait for connection with a timeout
+      const startTime = Date.now();
       const interval = setInterval(() => {
         const s = getSocket();
+        
+        // Success
         if (s?.connected) {
           s.emit('USER_JOIN', { username: name, avatarColor: selectedColor });
           setJoined(name, selectedColor);
           clearInterval(interval);
+          setIsConnecting(false);
+          return;
+        }
+
+        // Timeout or Error from store
+        if (Date.now() - startTime > 6000 || useGameStore.getState().connectionError) {
+          clearInterval(interval);
+          setIsConnecting(false);
         }
       }, 200);
     }
@@ -103,6 +113,17 @@ export default function JoinScreen() {
               </>
             )}
           </button>
+
+          {connectionError && (
+            <div className="join-error">
+              <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+              <span>{connectionError}</span>
+            </div>
+          )}
         </div>
 
         <p className="join-hint">Use WASD or Arrow keys to move</p>

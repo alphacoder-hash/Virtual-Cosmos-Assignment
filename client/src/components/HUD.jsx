@@ -1,7 +1,7 @@
 import useGameStore from '../store/useGameStore';
 
 export default function HUD() {
-  const { users, selfId, selfPosition, username, avatarColor, activeConnections } = useGameStore();
+  const { users, selfId, selfPosition, username, avatarColor, activeConnections, isConnected } = useGameStore();
 
   const onlineCount = users.length;
   const connectionCount = Object.keys(activeConnections).length;
@@ -50,6 +50,12 @@ export default function HUD() {
             </div>
           </div>
         )}
+
+        {/* Global Connection Status */}
+        <div className="conn-status-indicator">
+          <div className={`conn-dot ${isConnected ? 'online' : 'offline'}`} />
+          <span>{isConnected ? 'Server Online' : 'Server Offline'}</span>
+        </div>
       </div>
 
       {/* Bottom-left: Controls hint */}
