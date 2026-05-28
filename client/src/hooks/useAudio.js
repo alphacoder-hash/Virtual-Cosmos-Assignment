@@ -345,5 +345,5 @@ export function useAudio() {
     };
   }, []);
 
-  return { isMicOn, toggleMic, peerMuteStates };
+  return { isMicOn, toggleMic, enableMic, disableMic, peerMuteStates };
 }

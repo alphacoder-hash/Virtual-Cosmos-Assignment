@@ -18,7 +18,7 @@ export default function App() {
   return (
     <div className="app-root">
       {!isJoined ? (
-        <JoinScreen />
+        <JoinScreen onJoin={() => audioProps.enableMic(true)} />
       ) : (
         <div className="layout-container">
           <TopBar {...audioProps} />

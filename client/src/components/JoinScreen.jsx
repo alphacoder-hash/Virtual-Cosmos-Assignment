@@ -7,15 +7,20 @@ const AVATAR_COLORS = [
   '#3b82f6', '#ef4444', '#8b5cf6', '#06b6d4',
 ];
 
-export default function JoinScreen() {
+export default function JoinScreen({ onJoin }) {
   const [username, setUsername] = useState('');
   const [selectedColor, setSelectedColor] = useState(AVATAR_COLORS[0]);
   const [isConnecting, setIsConnecting] = useState(false);
   const { setJoined } = useGameStore();
 
-  const join = () => {
+  const join = async () => {
     const name = username.trim() || `Explorer_${Math.floor(Math.random() * 9999)}`;
     setIsConnecting(true);
+
+    // Pre-warm mic stream and request permissions before joining
+    if (onJoin) {
+      await onJoin().catch(() => {});
+    }
 
     const socket = getSocket();
     if (socket?.connected) {
