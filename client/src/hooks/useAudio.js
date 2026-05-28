@@ -59,7 +59,17 @@ export function useAudio() {
         audioElementsRef.current.set(peerId, audio);
       }
       const audio = audioElementsRef.current.get(peerId);
-      audio.srcObject = event.streams[0];
+      
+      // Dynamic fallback: construct a MediaStream if not provided by browser
+      if (event.streams && event.streams[0]) {
+        audio.srcObject = event.streams[0];
+      } else {
+        console.log(`[Audio] No stream found in ontrack, creating fallback stream for ${peerId}`);
+        if (!audio.srcObject || !(audio.srcObject instanceof MediaStream)) {
+          audio.srcObject = new MediaStream();
+        }
+        audio.srcObject.addTrack(event.track);
+      }
       
       // Explicit play (handles some browser autoplay restrictions)
       audio.play().catch(e => {
@@ -115,7 +125,15 @@ export function useAudio() {
   // ── Mic Management ─────────────────────────────────────────────────────────
 
   const enableMic = useCallback(async (isAuto = false) => {
-    if (localStreamRef.current) return localStreamRef.current;
+    if (localStreamRef.current) {
+      // Re-enable existing tracks instead of creating a new stream (prevents duplicate track errors)
+      localStreamRef.current.getTracks().forEach((t) => {
+        t.enabled = true;
+      });
+      setIsMicOn(true);
+      getSocket()?.emit('AUDIO_MUTE_TOGGLE', { muted: false });
+      return localStreamRef.current;
+    }
     
     try {
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
@@ -161,8 +179,12 @@ export function useAudio() {
   }, []);
 
   const disableMic = useCallback(() => {
-    localStreamRef.current?.getTracks().forEach((t) => t.stop());
-    localStreamRef.current = null;
+    if (localStreamRef.current) {
+      // Mute tracks (keeps connection alive without duplicate track negotiation errors)
+      localStreamRef.current.getTracks().forEach((t) => {
+        t.enabled = false;
+      });
+    }
     setIsMicOn(false);
     getSocket()?.emit('AUDIO_MUTE_TOGGLE', { muted: true });
   }, []);
