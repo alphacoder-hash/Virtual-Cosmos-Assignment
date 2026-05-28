@@ -118,6 +118,9 @@ export function useAudio() {
     if (localStreamRef.current) return localStreamRef.current;
     
     try {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        throw new Error('Microphone access not supported in this browser context (requires HTTPS)');
+      }
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
       localStreamRef.current = stream;
       setIsMicOn(true);
