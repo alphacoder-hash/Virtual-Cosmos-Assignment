@@ -31,6 +31,7 @@ const io = new Server(server, {
 const users = new Map();
 
 // ─── MongoDB Connection ───────────────────────────────────────────────────────
+mongoose.set('bufferCommands', false);
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/virtual-cosmos';
 mongoose.connect(MONGO_URI)
   .then(() => console.log('[DB] MongoDB connected'))
